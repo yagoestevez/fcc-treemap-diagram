@@ -24,3 +24,72 @@ body {
   justify-content     : center;
   align-items         : center; 
 }
+
+hr {
+  border              : 0;
+  width               : 100%;
+  padding-top         : 1rem;
+  border-bottom       : 1px solid rgba( $primary-color, .3 );
+}
+
+a, a:visited {
+  color               : $primary-color;
+  text-decoration     : none;
+  transition          : color 300ms;
+
+  &:hover, &:active {
+    color             : $key-color;
+  }
+}
+
+#heading {
+  padding             : 3rem 2rem 0 2rem;
+  width               : 100%;
+  text-align          : left;
+
+  #title {
+    font-size         : 2rem;
+  }
+
+  #description {
+    font-size         : 1rem;
+    color             : rgba( $primary-color, .7 );
+  }
+
+}
+
+#chart-container {
+  width               : 100%;
+  max-width           : 1600px;
+  position            : relative;
+  display             : flex;
+  flex-direction      : column;
+  align-items         : center;
+  justify-content     : center;
+
+  #preloader {
+    position          : absolute;
+    transition        : opacity 300ms;
+    color             : $primary-color;
+    animation         : blink 1s infinite;
+    @keyframes blink {
+      0%   { opacity  :  1; }
+      50%  { opacity  : .1; }
+      100% { opacity  :  1; }
+    }
+    &.hidden {
+      opacity         : 0;
+      animation       : none;
+      z-index         : -1;
+    }
+  }
+
+}
+
+#chart {
+  .tile-text {
+    fill              : $secondary-color;
+    font-size         : .7rem;
+  }
+
+}
