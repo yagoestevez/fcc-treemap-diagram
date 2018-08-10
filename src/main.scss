@@ -1,0 +1,26 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//                        by Yago Estévez. https://twitter.com/yagoestevez                        //
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@import url('https://fonts.googleapis.com/css?family=Merriweather');
+
+$primary-color        : #333333;
+$secondary-color      : #ffffff;
+$key-color            : #86d645;
+ 
+:root, * {
+  box-sizing          : border-box;
+  padding             : 0;
+  margin              : 0;
+}
+
+body {
+  background          : $secondary-color; 
+  color               : $primary-color;
+  font-family         : 'Merriweather', serif;
+  display             : flex;
+  flex-direction      : column; 
+  justify-content     : center;
+  align-items         : center; 
+}
