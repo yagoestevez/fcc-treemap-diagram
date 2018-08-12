@@ -5,9 +5,9 @@
 
 @import url('https://fonts.googleapis.com/css?family=Merriweather');
 
-$primary-color        : #333333;
+$primary-color        : #ffcc00;
 $secondary-color      : #ffffff;
-$key-color            : #86d645;
+$key-color            : #a50e98;
  
 :root, * {
   box-sizing          : border-box;
@@ -16,7 +16,14 @@ $key-color            : #86d645;
 }
 
 body {
-  background          : $secondary-color; 
+  background          : $secondary-color;
+  background          : repeating-linear-gradient(
+                        60deg,
+                        lighten( $key-color, 4% ),
+                        lighten( $key-color, 4% ) 5px,
+                        $key-color 5px,
+                        $key-color 10px
+                      );
   color               : $primary-color;
   font-family         : 'Merriweather', serif;
   display             : flex;
@@ -38,14 +45,16 @@ a, a:visited {
   transition          : color 300ms;
 
   &:hover, &:active {
-    color             : $key-color;
+    color             : $secondary-color;
   }
 }
 
 #heading {
-  padding             : 3rem 2rem 0 2rem;
+  padding             : 3rem;
   width               : 100%;
   text-align          : left;
+  display             : flex;
+  justify-content     : space-between;
 
   #title {
     font-size         : 2rem;
@@ -53,9 +62,26 @@ a, a:visited {
 
   #description {
     font-size         : 1rem;
-    color             : rgba( $primary-color, .7 );
+    color             : rgba( $secondary-color, .7 );
   }
 
+  ul {
+    li {
+      list-style-type : none;
+      text-align      : right;
+      font-weight     : bold;
+      cursor          : pointer;
+      line-height     : 1.4rem;
+      transition      : color 300ms; 
+      &:hover {
+        color         : $secondary-color;
+      }
+      &.active {
+        text-decoration: underline;
+        color         : $secondary-color;
+      }
+    }
+  }
 }
 
 #chart-container {
@@ -66,6 +92,13 @@ a, a:visited {
   flex-direction      : column;
   align-items         : center;
   justify-content     : center;
+  background          : repeating-linear-gradient(
+                        60deg,
+                        darken( $secondary-color, 4% ),
+                        darken( $secondary-color, 4% ) 5px,
+                        $secondary-color 5px,
+                        $secondary-color 10px
+                      );
 
   #preloader {
     position          : absolute;
@@ -94,6 +127,12 @@ a, a:visited {
     pointer-events    : none;
     cursor            : default;
   }
+  #legend {
+    .legend-text {
+      fill            : $key-color;
+      font-size       : .7rem;
+    }
+  }
 
 }
 
@@ -101,15 +140,15 @@ a, a:visited {
   pointer-events      : none;
   background          : $key-color;
   background          : repeating-linear-gradient(
-                        45deg,
+                        60deg,
                         lighten( $key-color, 4% ),
                         lighten( $key-color, 4% ) 5px,
                         $key-color 5px,
                         $key-color 10px
                       );
-  border              : 3px dashed $secondary-color;
+  border              : 3px dashed $key-color;
   box-shadow          : 0px 0px 20px 5px rgba(black,.2);
-  color               : rgba( $secondary-color, .7 );
+  color               : $secondary-color;
   text-align          : left;
   font-size           : 1rem;
   max-width           : 400px;
@@ -120,7 +159,7 @@ a, a:visited {
   .title {
     padding           : 1rem 1rem 0 1rem;
     height            : 100% !important;
-    font-size         : 1.4rem; 
+    font-size         : 1.2rem; 
     text-shadow       : 2px 2px 5px rgba( black, .2 );
     text-align        : center;
     color             : $primary-color;
@@ -147,6 +186,47 @@ footer {
 
   p {
     margin            : 1rem 0;
+  }
+
+}
+
+@media only screen and (max-width: 500px) {
+  #heading {
+    flex-direction    : column;
+    padding-bottom    : 0;
+    text-align        : center;
+    #title {
+      font-size       : 1.2rem;
+    }
+    #description {
+      font-size       : .7rem;
+    }
+    #menu {
+      margin-top      : 1rem; 
+      padding         : 1rem;
+      font-size       : .7rem;
+      background      : rgba( $secondary-color, .1 );
+      li {
+        text-align    : center; 
+      }
+    }
+  }
+  #chart-container {
+    margin            : .5rem;
+  }
+  #tooltip {
+    max-width         : 300px;
+    .title {
+      font-size       : .8rem;
+    }
+    .desc {
+      font-size       : .7rem;
+      line-height     : 1rem; 
+    }
+  }
+  footer {
+    font-size         : .8rem;
+    margin            : 0 1rem;
   }
 
 }

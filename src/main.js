@@ -24,7 +24,9 @@ Promise.all( API_URLs.map( url =>
   document.getElementById( 'preloader' ).classList.add( 'hidden' ); 
   // Builds the Treemap Diagram.
   const treemap = new Treemap( data );
-  treemap.makeCanvas().buildTreemap().drawTiles().paintColors().makeTooltip().handleEvents();
+  treemap
+    .makeCanvas().buildTreemap().drawTiles().paintColors()
+    .makeTooltip().handleEvents().makeLegend();
 } )
 .catch( error => { throw new Error( error ) } );
 
@@ -35,7 +37,7 @@ class Treemap {
     // Sets up sizes.
     this.chartWidth   = 1100;
     this.chartHeight  = 700;
-    this.margin       = { top: 60, bottom: 60, left: 60, right: 60 };
+    this.margin       = { top: 10, bottom: 100, left: 10, right: 10 };
     this.canvasWidth  = this.chartWidth  - this.margin.left - this.margin.right;
     this.canvasHeight = this.chartHeight - this.margin.top  - this.margin.bottom;
 
@@ -43,6 +45,8 @@ class Treemap {
     this.ksPledges    = data[0];
     this.mvSales      = data[1];
     this.vgSales      = data[2];
+
+    this.data         = this.ksPledges;
 
     // Chains methods after instantiating.
     this.and          = this;
@@ -66,7 +70,7 @@ class Treemap {
       .round( true )
       .paddingInner( 2 );
 
-    const root = d3.hierarchy( this.ksPledges )
+    const root = d3.hierarchy( this.data )
     .eachBefore( d => { d.data.id = ( d.parent ? d.parent.data.id + '.' : '' ) + d.data.name; } )
     .sum( d => d.value )
     .sort( ( a, b ) => b.height - a.height || b.value - a.value );
@@ -108,11 +112,54 @@ class Treemap {
   }
 
   paintColors ( ) {
-    const setColors = d3.scaleOrdinal( [
-      "#316395","#dc3912","#ff9900","#109618","#990099","#0099c6","#8b0707",
-      "#3b3eac","#b82e2e","#994499","#22aa99","#aaaa11","#6633cc","#e67300",
-    ] );
-    this.tile.attr( 'fill', d => setColors( d.data.category ) );
+    this.colorScale = d3.scaleOrdinal( )
+      .range( [
+        "#316395","#dc3912","#ff9900","#109618","#990099","#0099c6","#8b0707",
+        "#3b3eac","#b82e2e","#994499","#22aa99","#aaaa11","#6633cc","#e67300",
+      ] )
+      .domain( this.data.children.map( d => d.name ) );
+    this.tile.attr( 'fill', d => this.colorScale( d.data.category ) );
+
+    return this;
+  }
+
+  // Creates the legend squares and texts from the treemap.
+  makeLegend ( ) {
+    const categories = this.treeLeaves
+      .map( leaf => leaf.data.category )
+      .filter( ( cat, i, obj ) => obj.indexOf( cat ) === i );
+    const WIDTH       = this.chartWidth;
+    const HEIGHT      = this.canvasHeight;
+    const TILE_SIZE   =  10;
+    const TILE_OFFSET = 120;
+    const Y_SPACE     =  10;
+    const COLUMNS     = Math.floor( WIDTH / TILE_OFFSET );
+
+    const legend = this.canvas
+      .append( 'g' )
+      .attr( 'id', 'legend' )
+      .attr( 'transform', 'translate( 20, 10 )' )
+      .selectAll( 'g' )
+      .data( categories )
+      .enter( )
+      .append( 'g' )
+        .attr( 'transform', ( d, i ) => 
+          `translate(
+            ${ ( i % COLUMNS ) * TILE_OFFSET },
+            ${ HEIGHT + Math.floor( i / COLUMNS ) * TILE_SIZE + Y_SPACE * Math.floor( i / COLUMNS ) } 
+          )` );
+      
+    legend.append( 'rect' )
+      .attr( 'width'  , TILE_SIZE )
+      .attr( 'height' , TILE_SIZE )
+      .attr( 'class'  , 'legend-item' )
+      .attr( 'fill'   , d => this.colorScale( d ) );
+      
+    legend.append("text")
+      .attr( 'class', 'legend-text')
+      .attr( 'x'    , TILE_SIZE + 5 )
+      .attr( 'y'    , TILE_SIZE )
+      .text( d => d );
 
     return this;
   }
@@ -133,15 +180,17 @@ class Treemap {
     this.tile
     .on( 'mouseover', function ( d,i ) {
       const dataValue = d3.select( this ).attr( 'data-value' );
+      console.log( d );
       const tipText = `
         <h4 class="title">
-          TITLE
+          ${d.data.name}
           <hr />
         </h4>
         <div class="desc">
           <p>
-            DESC
+          Value: ${d.data.value}
           </p>
+          <small>Category: ${d.data.category}</small>
         </div>
       `;
       const browserWidth = document.querySelector( 'html' ).clientWidth;
@@ -153,6 +202,8 @@ class Treemap {
     .on( 'mouseout', function ( d,i ) {
       _self.tip.hide( );
     } );
+
+    return this;
   }
 
 }
