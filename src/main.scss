@@ -87,9 +87,66 @@ a, a:visited {
 }
 
 #chart {
+  overflow            : hidden;
   .tile-text {
     fill              : $secondary-color;
     font-size         : .7rem;
+    pointer-events    : none;
+    cursor            : default;
+  }
+
+}
+
+#tooltip {
+  pointer-events      : none;
+  background          : $key-color;
+  background          : repeating-linear-gradient(
+                        45deg,
+                        lighten( $key-color, 4% ),
+                        lighten( $key-color, 4% ) 5px,
+                        $key-color 5px,
+                        $key-color 10px
+                      );
+  border              : 3px dashed $secondary-color;
+  box-shadow          : 0px 0px 20px 5px rgba(black,.2);
+  color               : rgba( $secondary-color, .7 );
+  text-align          : left;
+  font-size           : 1rem;
+  max-width           : 400px;
+  display             : flex;
+  flex-direction      : column;
+  transition          : opacity 300ms;
+
+  .title {
+    padding           : 1rem 1rem 0 1rem;
+    height            : 100% !important;
+    font-size         : 1.4rem; 
+    text-shadow       : 2px 2px 5px rgba( black, .2 );
+    text-align        : center;
+    color             : $primary-color;
+    hr {
+      width           : 100%;
+      padding-top     : 1rem;
+      border-bottom   : 1px dashed $secondary-color;
+    }
+  }
+
+  .desc {
+    pointer-events    : none;
+    padding           : 1rem;
+    line-height       : 1.8rem;
+    text-align        : center; 
+  }
+
+}
+
+footer {
+  text-align          : center;
+  width               : 50%;
+  color               : rgba( $primary-color, .5 );
+
+  p {
+    margin            : 1rem 0;
   }
 
 }
