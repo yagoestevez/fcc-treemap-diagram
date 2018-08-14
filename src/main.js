@@ -78,10 +78,8 @@ class Treemap {
   // Builds treemap's hierarchy.
   buildTreemap ( ) {
     this.treemap = d3.treemap( )
-      .tile( d3.treemapResquarify )
       .size( [ this.canvasWidth, this.canvasHeight ] )
-      .round( true )
-      .paddingInner( 2 );
+      .paddingInner( 1 );
 
     const root = d3.hierarchy( this.data )
     .eachBefore( d => { d.data.id = ( d.parent ? d.parent.data.id + '.' : '' ) + d.data.name; } )
@@ -251,13 +249,11 @@ class Treemap {
 // Handles click events for the menu buttons.
 function handleMenu( treemap ) {
   const title           = document.getElementById( 'title' );
-  const desc            = document.getElementById( 'description' );
   const kickstarterBtn  = document.getElementById( 'kickstarterBtn' );
   const moviesBtn       = document.getElementById( 'movieBtn' );
   const videogamesBtn   = document.getElementById( 'videogameBtn' );
 
   kickstarterBtn.addEventListener( 'click', e => {
-    e.preventDefault( );
     kickstarterBtn.classList.add( 'active' );
     moviesBtn.classList.remove( 'active' );
     videogamesBtn.classList.remove( 'active' );
@@ -266,7 +262,6 @@ function handleMenu( treemap ) {
     desc.innerText  = 'Top 100 Most Pledged Kickstarter Campaigns Grouped By Category';
   } );
   moviesBtn.addEventListener( 'click', e => {
-    e.preventDefault( );
     kickstarterBtn.classList.remove( 'active' );
     moviesBtn.classList.add( 'active' );
     videogamesBtn.classList.remove( 'active' );
@@ -275,7 +270,6 @@ function handleMenu( treemap ) {
     desc.innerText  = 'Top 100 Highest Grossing Movies Grouped By Genre';
   } );
   videogamesBtn.addEventListener( 'click', e => {
-    e.preventDefault( );
     kickstarterBtn.classList.remove( 'active' );
     moviesBtn.classList.remove( 'active' );
     videogamesBtn.classList.add( 'active' );
