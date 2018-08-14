@@ -50,14 +50,14 @@ class Treemap {
     this.mvSales      = data[1];
     this.vgSales      = data[2];
 
-    // Selects initial dataset depending on the URL parameter provided.
+    // Selects initial dataset depending on the context (e.g: URL/?show=movies).
     // If there's no parameter, Kickstarter dataset will be selected.
-    const urlParams = new URLSearchParams( window.location.search );
-    if ( urlParams.get( 'show' ) === 'kickstarter' || !urlParams.get( 'show' ) )
+    const context = new URLSearchParams( window.location.search ).get( 'show' );
+    if ( context === 'kickstarter' || !context )
       this.data = this.ksPledges;
-    else if ( urlParams.get( 'show' ) === 'movies' )
+    else if ( context === 'movies' )
       this.data = this.mvSales;
-    else if ( urlParams.get( 'show' ) === 'videogames' )
+    else if ( context === 'videogames' )
       this.data = this.vgSales;
 
     // Chains methods after instantiating.
@@ -248,33 +248,51 @@ class Treemap {
 
 // Handles click events for the menu buttons.
 function handleMenu( treemap ) {
-  const title           = document.getElementById( 'title' );
+  const title           = document.getElementById( 'title'          );
+  const desc            = document.getElementById( 'description'    );
   const kickstarterBtn  = document.getElementById( 'kickstarterBtn' );
-  const moviesBtn       = document.getElementById( 'movieBtn' );
-  const videogamesBtn   = document.getElementById( 'videogameBtn' );
+  const moviesBtn       = document.getElementById( 'movieBtn'       );
+  const videogamesBtn   = document.getElementById( 'videogameBtn'   );
+  const showParam       = new URLSearchParams( window.location.search ).get( 'show' );
+
+  const setActiveLink = context => {
+    if ( context === 'kickstarter' || !context ) {
+      kickstarterBtn.classList.add( 'active' );
+      moviesBtn.classList.remove( 'active' );
+      videogamesBtn.classList.remove( 'active' );
+      title.innerText = 'Kickstarter Pledges';
+      desc.innerText  = 'Top 100 Most Pledged Kickstarter Campaigns Grouped By Category';
+    } else if ( context === 'movies' ) {
+      kickstarterBtn.classList.remove( 'active' );
+      moviesBtn.classList.add( 'active' );
+      videogamesBtn.classList.remove( 'active' );
+      title.innerText = 'Movie Sales';
+      desc.innerText  = 'Top 100 Highest Grossing Movies Grouped By Genre';
+    } else if ( context === 'videogames' ) {
+      kickstarterBtn.classList.remove( 'active' );
+      moviesBtn.classList.remove( 'active' );
+      videogamesBtn.classList.add( 'active' );
+      title.innerText = 'Video Game Sales';
+      desc.innerText  = 'Top 100 Most Sold Video Games Grouped by Platform';
+    }
+  };
+
+  // Sets active link on load depending on the context (e.g: URL/?show=kickstarter)
+  setActiveLink( showParam );
 
   kickstarterBtn.addEventListener( 'click', e => {
-    kickstarterBtn.classList.add( 'active' );
-    moviesBtn.classList.remove( 'active' );
-    videogamesBtn.classList.remove( 'active' );
+    e.preventDefault( );
     treemap.updateTreemap( 'kickstarter' );
-    title.innerText = 'Kickstarter Pledges';
-    desc.innerText  = 'Top 100 Most Pledged Kickstarter Campaigns Grouped By Category';
+    setActiveLink( 'kickstarter' );
   } );
   moviesBtn.addEventListener( 'click', e => {
-    kickstarterBtn.classList.remove( 'active' );
-    moviesBtn.classList.add( 'active' );
-    videogamesBtn.classList.remove( 'active' );
+    e.preventDefault( );
     treemap.updateTreemap( 'movies' );
-    title.innerText = 'Movie Sales';
-    desc.innerText  = 'Top 100 Highest Grossing Movies Grouped By Genre';
+    setActiveLink( 'movies' );
   } );
   videogamesBtn.addEventListener( 'click', e => {
-    kickstarterBtn.classList.remove( 'active' );
-    moviesBtn.classList.remove( 'active' );
-    videogamesBtn.classList.add( 'active' );
+    e.preventDefault( );
     treemap.updateTreemap( 'videogames' );
-    title.innerText = 'Video Game Sales';
-    desc.innerText  = 'Top 100 Most Sold Video Games Grouped by Platform';
+    setActiveLink( 'videogames' );
   } );
 }
